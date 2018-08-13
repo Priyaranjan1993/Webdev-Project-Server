@@ -46,7 +46,7 @@ import com.example.webdev.services.FileUploadService;
 import com.google.gson.Gson;
 
 @RestController
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "*", maxAge = 3600, allowCredentials = "true")
 public class UploadController {
 
 	@Autowired
@@ -63,21 +63,21 @@ public class UploadController {
 
 	List<String> files = new ArrayList<String>();
 
-	@PostMapping("/post/{title}")
-	public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file,@PathVariable("title") String title) {
+	@PostMapping("/post/{title}/{userId}")
+	public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file,@PathVariable("title") String title,@PathVariable("userId") String userId) {
 		String message = "";
 		JSONObject newObj;
 		try {
 			newObj = fileuploadService.store(file,title);
 
-			ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+			/*ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
 			HttpSession session = attr.getRequest().getSession();
-			String uid = (String) session.getAttribute("userId");
+			String uid = (String) session.getAttribute("userId");*/
 
 			Gson gson= new Gson();
 			UploadData obj= gson.fromJson(newObj.toString(),UploadData.class);
 
-			Optional<User> data = userRepository.findById(Integer.parseInt(uid));
+			Optional<User> data = userRepository.findById(Integer.parseInt(userId));
 			if(data.isPresent()) {
 				User loggedUser =  data.get();
 				Date currentDate = new Date();
@@ -103,18 +103,18 @@ public class UploadController {
 		}
 	}
 
-	@GetMapping("/getallfiles")
-	public List<UploadData> getListFiles(Model model) {
+	@GetMapping("/getallfiles/{userId}")
+	public List<UploadData> getListFiles(Model model, @PathVariable("userId") String userId) {
 		/*		List<String> fileNames = files
 				.stream().map(fileName -> MvcUriComponentsBuilder
 						.fromMethodName(UploadController.class, "getFile", fileName).build().toString())
 				.collect(Collectors.toList());*/
 
-		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+/*		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
 		HttpSession session = attr.getRequest().getSession();
-		String uid = (String) session.getAttribute("userId");
+		String uid = (String) session.getAttribute("userId");*/
 
-		Optional<User> data = userRepository.findById(Integer.parseInt(uid));
+		Optional<User> data = userRepository.findById(Integer.parseInt(userId));
 		if(data.isPresent()) {
 			User user = data.get();
 			return user.getData();

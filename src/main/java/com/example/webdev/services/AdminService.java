@@ -10,6 +10,7 @@ import java.util.TimeZone;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,6 +24,7 @@ import com.example.webdev.repositories.AppointmentRepository;
 import com.example.webdev.repositories.UserRepository;
 
 @RestController
+@CrossOrigin(origins = "*", maxAge = 3600 , allowCredentials = "true")
 public class AdminService {
 	@Autowired
 	UserRepository userRepository;

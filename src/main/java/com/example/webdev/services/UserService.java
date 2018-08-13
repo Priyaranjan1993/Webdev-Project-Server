@@ -1,7 +1,5 @@
 package com.example.webdev.services;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -10,11 +8,11 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +32,7 @@ import com.example.webdev.repositories.UserRepository;
 
 @RestController
 @SessionAttributes("userId")
+@CrossOrigin(origins = "*", maxAge = 3600, allowCredentials = "true")
 public class UserService {
 	@Autowired
 	UserRepository userRepository;
@@ -52,11 +51,11 @@ public class UserService {
 	}
 
 
-	@RequestMapping(method = RequestMethod.POST, value="api/register",produces = MediaType.TEXT_PLAIN_VALUE)
-	@ResponseBody
-	public String register(@RequestBody User user, HttpSession session)
+	@RequestMapping(method = RequestMethod.POST, value="/api/register")
+	public List<String> register(@RequestBody User user, HttpSession session)
 	{
 		List<User> userList = (List<User>) userRepository.findUserByUsername(user.getUsername());
+		List<String> u1 = new ArrayList<String>();
 		if(userList.isEmpty())
 		{
 			userRepository.save(user);
@@ -65,10 +64,12 @@ public class UserService {
 			String id = Integer.toString(u.get(0).getId());
 			session.setAttribute("userId",id);
 			session.setAttribute("user",u.get(0));
-			return Boolean.TRUE.toString();
+			u1.add(id);
+			u1.add(Boolean.TRUE.toString());
+			return u1;
 		}
 		else {
-			return Boolean.FALSE.toString();
+			return u1;
 		}
 	}
 
@@ -172,30 +173,30 @@ public class UserService {
 		return str.toString();
 	}
 
-	@GetMapping("/api/profile")	
-	public User findProfileById(HttpSession session) {
-		String uid = (String) session.getAttribute("userId");
-		Optional<User> data = userRepository.findById(Integer.parseInt(uid));
-		if(data.isPresent()) {
-			return data.get();
-		}
-		return null;
-	}
-	
-	@GetMapping("/api/profile/{patientId}")	
-	public User findPatientById(@PathVariable("patientId") int patientId) {
-		Optional<User> data = userRepository.findById(patientId);
+	@GetMapping("/api/profile/{userId}")	
+	public User findProfileById(@PathVariable("userId") String userId) {
+		//String uid = (String) session.getAttribute("userId");
+		Optional<User> data = userRepository.findById(Integer.parseInt(userId));
 		if(data.isPresent()) {
 			return data.get();
 		}
 		return null;
 	}
 
-	@RequestMapping(method = RequestMethod.PUT, value="/api/profile")
-	public User updateProfile(@RequestBody User newuser,HttpSession session)
+	/*	@GetMapping("/api/profile/{patientId}")	
+	public User findPatientById(@PathVariable("patientId") int patientId) {
+		Optional<User> data = userRepository.findById(patientId);
+		if(data.isPresent()) {
+			return data.get();
+		}
+		return null;
+	}*/
+
+	@RequestMapping(method = RequestMethod.PUT, value="/api/profile/{userId}")
+	public User updateProfile(@RequestBody User newuser,@PathVariable("userId") String userId)
 	{
-		String uid = (String) session.getAttribute("userId");
-		Optional<User> data = userRepository.findById(Integer.parseInt(uid));
+		//String uid = (String) session.getAttribute("userId");
+		Optional<User> data = userRepository.findById(Integer.parseInt(userId));
 		if(data.isPresent()) {
 			User user = data.get();
 			user.setFirstName(newuser.getFirstName());
@@ -279,7 +280,7 @@ public class UserService {
 	}
 
 	@GetMapping("/api/user/{userId}")	
-	public User findUserById(@PathVariable("userId") int userId,HttpSession session) {
+	public User findUserById(@PathVariable("userId") int userId) {
 		Optional<User> data = userRepository.findById(userId);
 		if(data.isPresent()) {
 			return data.get();
@@ -288,9 +289,9 @@ public class UserService {
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value="/api/user/{userId}")
-	public User updateUser(@RequestBody User newuser,@PathVariable("userId") int id,HttpSession session)
+	public User updateUser(@RequestBody User newuser,@PathVariable("userId") String id)
 	{
-		Optional<User> data = userRepository.findById(id);
+		Optional<User> data = userRepository.findById(Integer.parseInt(id));
 		if(data.isPresent()) {
 			User user = data.get();
 			user.setFirstName(newuser.getFirstName());
@@ -304,10 +305,10 @@ public class UserService {
 		return null;
 	}
 
-	@PostMapping("/api/appointment")
-	public Appointment createAppointment(@RequestBody Appointment newAppointment,HttpSession session) {
-		String uid = (String) session.getAttribute("userId");
-		Optional<User> data = userRepository.findById(Integer.parseInt(uid));
+	@PostMapping("/api/appointment/{userId}")
+	public Appointment createAppointment(@RequestBody Appointment newAppointment,@PathVariable("userId") String userId) {
+		//String uid = (String) session.getAttribute("userId");
+		Optional<User> data = userRepository.findById(Integer.parseInt(userId));
 		if(data.isPresent()) {
 			User user = data.get();
 			Date currentDate = new Date();
@@ -321,17 +322,17 @@ public class UserService {
 				e.printStackTrace();
 			}
 			newAppointment.setRequestedUser(user);
-			newAppointment.setUserId(Integer.parseInt(uid));
+			newAppointment.setUserId(Integer.parseInt(userId));
 			return appointmentRepository.save(newAppointment);
 		}
 		return null;
 	}
 
-	@GetMapping("/api/appointment")
-	public List<Appointment> findAllAppointmentsOfUser(HttpSession session) 
+	@GetMapping("/api/appointment/{userId}")
+	public List<Appointment> findAllAppointmentsOfUser(@PathVariable("userId") String userId) 
 	{
-		String uid = (String) session.getAttribute("userId");
-		Optional<User> data = userRepository.findById(Integer.parseInt(uid));
+		//String uid = (String) session.getAttribute("userId");
+		Optional<User> data = userRepository.findById(Integer.parseInt(userId));
 		if(data.isPresent()) {
 			User user = data.get();
 			return user.getAppointmentData();
@@ -339,7 +340,7 @@ public class UserService {
 		return null;
 	}
 
-	@GetMapping("/api/appointment/{docId}")
+	@GetMapping("/api/appointment/doctor/{docId}")
 	public List<Appointment> findAllAppointmentsOfDoctor(@PathVariable("docId") String docId) 
 	{
 		List<Appointment> appointmentList = (List<Appointment>) appointmentRepository.findAppointmentByUid(docId);
@@ -349,7 +350,7 @@ public class UserService {
 		}
 		return null;
 	}
-	
+
 	@RequestMapping(method = RequestMethod.PUT, value="/api/updateAppointment")
 	public Appointment updateAppointment(@RequestBody Appointment appointment)
 	{
