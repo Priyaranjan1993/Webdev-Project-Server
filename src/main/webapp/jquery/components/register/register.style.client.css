@@ -1,0 +1,74 @@
+@charset "ISO-8859-1";
+
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700);
+
+body {
+	background: #606468;
+	font-family: 'Open Sans', sans-serif;
+}
+
+.customWidth {
+	max-width: 100% !important;
+}
+
+a#loginLink {
+    margin: 0 0 0 19px;
+}
+
+#registartionBtn {
+	margin: 0 0 12px 14px;
+	width: 98%;
+}
+
+.registerContainer {
+	font-size: 14px;
+	width: 635px;
+	margin: 16px auto;
+}
+
+.registerContainer p {
+	padding: 12px;
+	position: relative;
+	top: 25px;
+	right: 10px;
+}
+
+.register-body {
+	padding: 10px 12px 12px 12px;
+	background: #ebebeb;
+}
+
+.registerContainer input {
+	box-sizing: border-box;
+	font-size: 14px;
+	padding: 14px;
+	outline: none;
+	border-width: 2px;
+	border-style: solid;
+}
+
+.register-banner {
+	background: #28d;
+	padding: 14px;
+	font-size: 20px;
+	font-weight: bold;
+	text-align: center;
+	color: #fff;
+	margin-bottom: 0px;
+}
+
+.registerContainer input[type="submit"]:hover {
+	background: #17c;
+}
+
+.register-triangle {
+	border-bottom-color: #28d;
+	width: 0;
+	margin-left: auto;
+	border: 10px solid transparent;
+	margin-right: auto;
+}
+
+.registerContainer input[type="submit"]:focus {
+	border-color: #05a;
+}

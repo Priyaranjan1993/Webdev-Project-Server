@@ -1,0 +1,74 @@
+@charset "ISO-8859-1";
+
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700);
+
+body {
+	background: #606468;
+	font-family: 'Open Sans', sans-serif;
+}
+
+.customWidth {
+	max-width: 100% !important;
+}
+
+#fgtpwdLink {
+	font-size: 14px;
+	margin: 0 0 0 14px;
+}
+
+#signupLink {
+	font-size: 14px;
+	margin: 0 12px 0 0px;
+}
+
+.loginContainer {
+	font-size: 14px;
+	width: 435px;
+	margin: 16px auto;
+}
+
+.loginContainer p {
+	padding: 12px;
+	position: relative;
+	top: 25px;
+	right: 10px;
+}
+
+.login-body {
+	padding: 10px 12px 12px 12px;
+	background: #ebebeb;
+}
+
+.loginContainer input {
+	box-sizing: border-box;
+	font-size: 14px;
+	padding: 14px;
+	outline: none;
+	border-width: 2px;
+	border-style: solid;
+}
+
+.login-banner {
+	background: #28d;
+	padding: 14px;
+	font-size: 20px;
+	font-weight: bold;
+	text-align: center;
+	color: #fff;
+	margin-bottom: 0px;
+}
+
+#loginBtn {
+	position: relative;
+	margin: 0 0 0px 11px;
+	width: 100%;
+	bottom: 25px;
+}
+
+.loginContainer input[type="submit"]:hover {
+	background: #17c;
+}
+
+.loginContainer input[type="submit"]:focus {
+	border-color: #05a;
+}
