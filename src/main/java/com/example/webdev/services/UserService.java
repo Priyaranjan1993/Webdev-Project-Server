@@ -350,6 +350,23 @@ public class UserService {
 		}
 		return null;
 	}
+	
+	@GetMapping("/api/appointment/user/{docId}")
+	public List<User> getUniqueAppointmentsOfDcotor(@PathVariable("docId") String docId) 
+	{
+		List<Integer> userIdList = (List<Integer>) appointmentRepository.findUniqueAppointmentsOfDcotor(docId);
+		List<User> userList = new ArrayList<User>();
+		for(int u : userIdList) {
+			Optional<User> data = userRepository.findById(u);
+			User newUser = data.get();
+			userList.add(newUser);
+		}
+		if(!userList.isEmpty())
+		{
+			return userList;
+		}
+		return null;
+	}
 
 	@RequestMapping(method = RequestMethod.PUT, value="/api/updateAppointment")
 	public Appointment updateAppointment(@RequestBody Appointment appointment)
